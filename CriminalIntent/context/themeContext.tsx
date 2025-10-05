@@ -1,26 +1,44 @@
 import { createContext, useState } from "react";
 
-type ThemeContextType = {
-  color: string;
-  setColor: (color: string) => void;
+type ThemeColors = {
+  mainColor: string;
+  pageColor: string;
+  textColor: string;
+  boxTextColor: string;
 };
 
-export const ThemeContext = createContext<ThemeContextType>({
-  color: "blueviolet",
-  setColor: () => {},
-});
+type ThemeContextType = ThemeColors & {
+  setColor: (colors: Partial<ThemeColors>) => void;
+};
 
 type ThemeContextProviderProps = {
   children: React.ReactNode;
 };
 
+export const ThemeContext = createContext<ThemeContextType>({
+  mainColor: "blueviolet",
+  pageColor: "white",
+  textColor: "black",
+  boxTextColor: "white",
+  setColor: () => {},
+});
+
 export default function ThemeContextProvider({
   children,
 }: ThemeContextProviderProps) {
-  const [color, setColor] = useState("blueviolet");
+  const [theme, setTheme] = useState({
+    mainColor: "blueviolet",
+    pageColor: "white",
+    textColor: "black",
+    boxTextColor: "white",
+  });
+
+  const setColor = (colors: Partial<ThemeColors>) => {
+    setTheme((prev) => ({ ...prev, ...colors }));
+  };
 
   return (
-    <ThemeContext.Provider value={{ color, setColor }}>
+    <ThemeContext.Provider value={{ ...theme, setColor }}>
       {children}
     </ThemeContext.Provider>
   );
